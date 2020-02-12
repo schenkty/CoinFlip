@@ -3,15 +3,45 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="/coin.css" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Cinzel:400,700&display=swap" rel="stylesheet">
   <script type="text/javascript" src="/bundle.js"></script>
   <script type="text/javascript">
     let currentGameID;
     let ws;
     let currentGame = {};
-    var win = 0;
-    var loss = 0;
+    let headsCount = 0;
+    let tailsCount = 0;
 
-    function FlipWS() {
+    function deferFn(callback, ms) {
+        setTimeout(callback, ms);
+    }
+
+    function processResult(result) {
+      const status = document.querySelector('.status');
+      const heads = document.querySelector('.headsCount');
+      const tails = document.querySelector('.tailsCount');
+      const headsCoin = document.querySelector('.heads');
+      const tailsCoin = document.querySelector('.tails');
+
+      if (result === 'heads') {
+        headsCount++;
+        heads.innerText = headsCount;
+        tailsCoin.style.display = 'none';
+        headsCoin.style.display = 'block';
+        status.innerText = `You Won!`;
+      } else {
+        tailsCount++;
+        tails.innerText = tailsCount;
+        headsCoin.style.display = 'none';
+        tailsCoin.style.display = 'block';
+        status.innerText = `You Lost!`;
+      }
+    }
+
+    function Flip() {
+      const coin = document.querySelector('#coin');
+
       // open up coin flip socket
       ws = new WebSocket("ws://127.0.0.1:8080");
 
@@ -26,26 +56,34 @@
         const data = JSON.parse(message.data);
         switch (data.event) {
           case "subscribed":
+            // reset local game object
+            currentGame = {};
             currentGameID = data.game;
+            coin.setAttribute('class', '');
+
             ws.send(JSON.stringify({
               "event": "newGame",
               "game": currentGameID
             }));
             break;
           case "houseHash":
-            // save house hash to local object
-            currentGame.houseHash = data.hash;
+            if (currentGame.hasOwnProperty('houseHash')) {
+              alert("House is flawed!");
+            } else {
+              // save house hash to local object
+              currentGame.houseHash = data.hash;
 
-            // generate player random and hash
-            let playerRandom = generateRandom();
-            currentGame.playerRandom = playerRandom;
+              // generate player random and hash
+              let playerRandom = generateRandom();
+              currentGame.playerRandom = playerRandom;
 
-            // send player random hash to server
-            ws.send(JSON.stringify({
-              "event": "playerRandom",
-              "game": currentGameID,
-              "playerRandom": playerRandom
-            }));
+              // send player random hash to server
+              ws.send(JSON.stringify({
+                "event": "playerRandom",
+                "game": currentGameID,
+                "playerRandom": playerRandom
+              }));
+            }
             break;
           case "houseRandom":
             // verify that the house random is the same as the house hash
@@ -56,25 +94,34 @@
               let num = parseInt(finalHash.charAt(37), 16);
 
               if (oddOrEven(num)) {
-                console.log('House Won!');
+                // house lost
+                currentGame.won = true;
               } else {
-                console.log('Player Won!');
+                // house won
+                currentGame.won = false;
               }
             } else {
-              console.log('House is flawed!');
+              alert('House is flawed!');
             }
           case "gameUpdate":
             // notify player if we won or lost.
-            if (data.won === true) {
+            if (data.won === true && currentGame.won === true) {
               // player won
-              win++;
-            } else if (data.won === false) {
+              console.log("You Won!!");
+              deferFn(function () {
+                  coin.setAttribute('class', 'animate-' + 'heads');
+                  deferFn(processResult.bind(null, 'heads'), 2900);
+              }, 100);
+            } else if (data.won === false && currentGame.won == false) {
               // player lost
-              loss++;
+              console.log("You Lost!");
+              deferFn(function () {
+                  coin.setAttribute('class', 'animate-' + 'tails');
+                  deferFn(processResult.bind(null, 'tails'), 2900);
+              }, 100);
             }
-
-            document.getElementById("win").innerHTML = `win: ${win}`;
-            document.getElementById("loss").innerHTML = `loss: ${loss}`;
+          case "ping":
+            break;
           default:
             break;
         }
@@ -82,19 +129,21 @@
 
       ws.onclose = function() {
         // websocket is closed.
-        console.log("FlipWS Connection is closed...");
+        console.log("Flip Socket Connection is closed...");
       };
     }
   </script>
 </head>
 
 <body>
-  <div id="sse">
-    <a href="javascript:FlipWS()">Run WebSocket</a>
-    <div id="win"></div>
-    <div id="loss"></div>
+  <div id="coin" class=''>
+    <div class="heads"></div>
+    <div class="tails"></div>
   </div>
+  <button class='btn' onclick="Flip()">Toss the coin!</button>
 
+  <p class="heads-tails-counter">Heads:<span class="headsCount">0</span> Tails:<span Class="tailsCount">0</span></p>
+  <p><span Class="status"></span></p>
 </body>
 
 </html>

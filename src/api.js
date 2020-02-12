@@ -2,16 +2,26 @@
 /* global express$Request */
 /* global express$Response */
 
-import { join } from 'path';
+import {
+    join
+} from 'path';
 
 import WebSocket from 'ws';
 import express from 'express';
 import uuid from 'uuid';
 
-import { oddOrEven, toHash, generateRandom } from './helper';
-import { SERVER_WS } from './config';
+import {
+    oddOrEven,
+    toHash,
+    generateRandom
+} from './helper';
+import {
+    SERVER_WS
+} from './config';
 
-const wss = new WebSocket.Server({ port: SERVER_WS });
+const wss = new WebSocket.Server({
+    port: SERVER_WS
+});
 
 const ROOT_DIR = join(__dirname, '..');
 const pulseTime = 10;
@@ -21,7 +31,9 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.get('/', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/index.html')));
 app.get('/bundle.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/bundle.js')));
-// app.get('/sha256.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/sha256.js')));
+app.get('/coin.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/coin.css')));
+app.get('/heads.jpg', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/heads.jpg')));
+app.get('/tails.jpg', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/tails.jpg')));
 
 // websocket subscriber map
 let subscriptionMap = {};
@@ -89,21 +101,24 @@ function flip(ws, game) {
     let finalHash = toHash(final);
     let num = parseInt(finalHash.charAt(37), 16);
 
-    let clientEvent = {
-        event:     'gameUpdate'
-    };
-
     if (oddOrEven(num)) {
-        // house won
-        clientEvent.won = false;
-        console.log('House Won!');
-    } else {
         // house lost
-        clientEvent.won = true;
-        console.log('House Lost');
+        let event = {
+            event: 'gameUpdate',
+            won:   true
+        };
+        console.log('House Lost!');
+        // send update event to client
+        ws.send(JSON.stringify(event));
+    } else {
+        // house won
+        let event = {
+            event: 'gameUpdate',
+            won:   false
+        };
+        console.log('House Won');
+        ws.send(JSON.stringify(event));
     }
-    // send update event to client
-    ws.send(JSON.stringify(clientEvent));
 }
 
 function newGame(ws, game) {
@@ -118,7 +133,7 @@ function newGame(ws, game) {
     gameMap[game] = gameObj;
 
     const event = {
-        event:     'houseHash',
+        event: 'houseHash',
         hash:  gameObj.houseHash
     };
     ws.send(JSON.stringify(event));
@@ -133,7 +148,7 @@ function getPlayerRandom(ws, game, playerRandom) {
 
     const event = {
         event:       'houseRandom',
-        houseRandom:  gameMap[game].houseRandom
+        houseRandom: gameMap[game].houseRandom
     };
     ws.send(JSON.stringify(event));
 }
