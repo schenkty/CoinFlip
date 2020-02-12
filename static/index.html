@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+  <script type="text/javascript" src="/bundle.js"></script>
+  <script type="text/javascript">
+    let currentGameID;
+    let ws;
+    let currentGame = {};
+    var win = 0;
+    var loss = 0;
+
+    function FlipWS() {
+      // open up coin flip socket
+      ws = new WebSocket("ws://127.0.0.1:8080");
+
+      ws.onopen = function() {
+        // Web Socket is connected, send data using send()
+        ws.send(JSON.stringify({
+          "event": "subscribe"
+        }));
+      };
+
+      ws.onmessage = function(message) {
+        const data = JSON.parse(message.data);
+        switch (data.event) {
+          case "subscribed":
+            currentGameID = data.game;
+            ws.send(JSON.stringify({
+              "event": "newGame",
+              "game": currentGameID
+            }));
+            break;
+          case "houseHash":
+            // save house hash to local object
+            currentGame.houseHash = data.hash;
+
+            // generate player random and hash
+            let playerRandom = generateRandom();
+            // console.log("Your Random is: ", playerRandom);
+
+            // send player random hash to server
+            ws.send(JSON.stringify({
+              "event": "playerRandom",
+              "game": currentGameID,
+              "playerRandom": currentGame.playerRandom
+            }));
+            break;
+          case "houseRandom":
+            // verify that the house random is the same as the house hash
+            if (currentGame.houseHash === toHash(data.houseRandom)) {
+              console.log('House is Verified!');
+            } else {
+              console.log('House is flawed!');
+            }
+          case "gameUpdate":
+            // notify player if we won or lost.
+            if (data.won === true) {
+              // player won
+              win++;
+            } else if (data.won === false) {
+              // player lost
+              loss++;
+            }
+
+            document.getElementById("win").innerHTML = `win: ${win}`;
+            document.getElementById("loss").innerHTML = `loss: ${loss}`;
+          default:
+            break;
+        }
+      };
+
+      ws.onclose = function() {
+        // websocket is closed.
+        console.log("FlipWS Connection is closed...");
+      };
+    }
+  </script>
+</head>
+
+<body>
+  <div id="sse">
+    <a href="javascript:FlipWS()">Run WebSocket</a>
+    <div id="win"></div>
+    <div id="loss"></div>
+  </div>
+
+</body>
+
+</html>
