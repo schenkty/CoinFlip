@@ -1,7 +1,9 @@
 body {
   font-family: 'Cinzel', serif;
-  background-color: #F2F2F2;
+  /* background-color: #F2F2F2; */
+  background-color: white;
   color: #010326;
+  margin: 0;
 }
 
 h2 {
@@ -21,7 +23,7 @@ button {
   font-size: 1rem;
   font-weight: 700;
   color: #F2F2F2;
-  background-color: #656B8C;
+  background-color: #497ACE;
   border: 2px solid #F2F2F2;
   border-radius: 30px;
   box-shadow: 3px 3px 6px #656B8C;

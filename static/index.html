@@ -3,6 +3,7 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="/nav.css" type="text/css">
   <link rel="stylesheet" href="/coin.css" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Cinzel:400,700&display=swap" rel="stylesheet">
   <script type="text/javascript" src="/bundle.js"></script>
@@ -14,7 +15,7 @@
     let tailsCount = 0;
 
     function deferFn(callback, ms) {
-        setTimeout(callback, ms);
+      setTimeout(callback, ms);
     }
 
     function processResult(result) {
@@ -108,16 +109,16 @@
             if (data.won === true && currentGame.won === true) {
               // player won
               console.log("You Won!!");
-              deferFn(function () {
-                  coin.setAttribute('class', 'animate-' + 'heads');
-                  deferFn(processResult.bind(null, 'heads'), 2900);
+              deferFn(function() {
+                coin.setAttribute('class', 'animate-' + 'heads');
+                deferFn(processResult.bind(null, 'heads'), 2900);
               }, 100);
             } else if (data.won === false && currentGame.won == false) {
               // player lost
               console.log("You Lost!");
-              deferFn(function () {
-                  coin.setAttribute('class', 'animate-' + 'tails');
-                  deferFn(processResult.bind(null, 'tails'), 2900);
+              deferFn(function() {
+                coin.setAttribute('class', 'animate-' + 'tails');
+                deferFn(processResult.bind(null, 'tails'), 2900);
               }, 100);
             }
           case "ping":
@@ -136,14 +137,19 @@
 </head>
 
 <body>
-  <div id="coin" class=''>
-    <div class="heads"></div>
-    <div class="tails"></div>
+  <div class="topnav">
+    <a class="active" href="">CoinFlip Game</a>
   </div>
-  <button class='btn' onclick="Flip()">Toss the coin!</button>
+  <center>
+    <div id="coin" class=''>
+      <div class="heads"></div>
+      <div class="tails"></div>
+    </div>
+    <button class='btn' onclick="Flip()">Toss the coin!</button>
 
-  <p class="heads-tails-counter">Heads:<span class="headsCount">0</span> Tails:<span Class="tailsCount">0</span></p>
-  <p><span Class="status"></span></p>
+    <p class="heads-tails-counter">Heads:<span class="headsCount">0</span> Tails:<span Class="tailsCount">0</span></p>
+    <p><span Class="status"></span></p>
+  </center>
 </body>
 
 </html>

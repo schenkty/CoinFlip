@@ -31,6 +31,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.get('/', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/index.html')));
 app.get('/bundle.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/bundle.js')));
+app.get('/nav.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/nav.css')));
 app.get('/coin.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/coin.css')));
 app.get('/heads.jpg', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/heads.jpg')));
 app.get('/tails.jpg', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/tails.jpg')));
