@@ -4,7 +4,7 @@
 let crypto = require('crypto');
 
 export function oddOrEven(x) : Promise<boolean> {
-    return (x && 1) ? true : false;
+    return Boolean(x % 2);
 }
 
 export function generateRandom() : Promise<string> {

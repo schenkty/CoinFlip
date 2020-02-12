@@ -3,7 +3,7 @@
 let crypto = require('crypto');
 
 global.oddOrEven = function oddOrEven(x) {
-    return (x && 1) ? true : false;
+    return Boolean(x % 2);
 }
 
 global.generateRandom = function generatePlayerRandom() {
