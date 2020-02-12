@@ -38,19 +38,28 @@
 
             // generate player random and hash
             let playerRandom = generateRandom();
-            // console.log("Your Random is: ", playerRandom);
+            currentGame.playerRandom = playerRandom;
 
             // send player random hash to server
             ws.send(JSON.stringify({
               "event": "playerRandom",
               "game": currentGameID,
-              "playerRandom": currentGame.playerRandom
+              "playerRandom": playerRandom
             }));
             break;
           case "houseRandom":
             // verify that the house random is the same as the house hash
             if (currentGame.houseHash === toHash(data.houseRandom)) {
               console.log('House is Verified!');
+              let final = `final${  data.houseRandom  }${ currentGame.playerRandom }`;
+              let finalHash = toHash(final);
+              let num = parseInt(finalHash.charAt(37), 16);
+
+              if (oddOrEven(num)) {
+                console.log('House Won!');
+              } else {
+                console.log('Player Won!');
+              }
             } else {
               console.log('House is flawed!');
             }

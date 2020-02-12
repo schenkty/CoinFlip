@@ -2,6 +2,10 @@
 (function (global){
 let crypto = require('crypto');
 
+global.oddOrEven = function oddOrEven(x) {
+    return (x && 1) ? true : false;
+}
+
 global.generateRandom = function generatePlayerRandom() {
   return crypto.randomBytes(32).toString('hex');
 }
