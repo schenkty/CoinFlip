@@ -14,34 +14,39 @@
     let headsCount = 0;
     let tailsCount = 0;
 
-    function deferFn(callback, ms) {
-      setTimeout(callback, ms);
+    function setHolder(result) {
+      // set holder to winner
+      const holder = document.getElementById("coin-holder");
+      const coin = document.getElementById("coin");
+      holder.src = `/${result}.png`;
+      holder.style.display = 'block';
+      coin.style.display = 'none';
     }
 
     function processResult(result) {
-      const status = document.querySelector('.status');
+      const status = document.getElementById("final_winner");
       const heads = document.querySelector('.headsCount');
       const tails = document.querySelector('.tailsCount');
-      const headsCoin = document.querySelector('.heads');
-      const tailsCoin = document.querySelector('.tails');
 
       if (result === 'heads') {
         headsCount++;
         heads.innerText = headsCount;
-        tailsCoin.style.display = 'none';
-        headsCoin.style.display = 'block';
-        status.innerText = `You Won!`;
+        status.innerHTML = `You Won!`;
       } else {
         tailsCount++;
         tails.innerText = tailsCount;
-        headsCoin.style.display = 'none';
-        tailsCoin.style.display = 'block';
-        status.innerText = `You Lost!`;
+        status.innerHTML = `You Lost!`;
       }
+
+      setTimeout(function(){
+        setHolder(result);
+      }, 500);
     }
 
-    function Flip() {
-      const coin = document.querySelector('#coin');
+    function flip() {
+      const coin = document.getElementById("coin");
+
+      coin.class = 'active';
 
       // open up coin flip socket
       ws = new WebSocket("ws://127.0.0.1:8080");
@@ -60,7 +65,6 @@
             // reset local game object
             currentGame = {};
             currentGameID = data.game;
-            coin.setAttribute('class', '');
 
             ws.send(JSON.stringify({
               "event": "newGame",
@@ -109,17 +113,13 @@
             if (data.won === true && currentGame.won === true) {
               // player won
               console.log("You Won!!");
-              deferFn(function() {
-                coin.setAttribute('class', 'animate-' + 'heads');
-                deferFn(processResult.bind(null, 'heads'), 2900);
-              }, 100);
+              coin.src = "/heads.png";
+              processResult('heads');
             } else if (data.won === false && currentGame.won == false) {
               // player lost
               console.log("You Lost!");
-              deferFn(function() {
-                coin.setAttribute('class', 'animate-' + 'tails');
-                deferFn(processResult.bind(null, 'tails'), 2900);
-              }, 100);
+              coin.src = "/tails.png";
+              processResult('tails');
             }
           case "ping":
             break;
@@ -141,14 +141,12 @@
     <a class="active" href="">CoinFlip Game</a>
   </div>
   <center>
-    <div id="coin" class=''>
-      <div class="heads"></div>
-      <div class="tails"></div>
-    </div>
-    <button class='btn' onclick="Flip()">Toss the coin!</button>
-
+    <p>Tap the Coin to Play!</p>
+    <br>
+    <img id="coin-holder" src="">
+    <input id="coin" type="image" src="/heads.png" onclick="flip();" class="inactive"/>
+    <h1 id="final_winner"></h1>
     <p class="heads-tails-counter">Heads:<span class="headsCount">0</span> Tails:<span Class="tailsCount">0</span></p>
-    <p><span Class="status"></span></p>
   </center>
 </body>
 

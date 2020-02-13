@@ -1,116 +1,81 @@
 body {
   font-family: 'Cinzel', serif;
-  /* background-color: #F2F2F2; */
   background-color: white;
   color: #010326;
   margin: 0;
 }
 
+h1 {
+  font-size: 4vw;
+  text-align: center;
+  margin-bottom: 0;
+  margin-top: 1.5%;
+  text-shadow: 2px 2px grey;
+}
+
 h2 {
-  margin: .25rem;
+  margin-left: 5%;
+  font-size: 2vw;
+  text-shadow: .5px .5px grey;
 }
 
-.container {
-  margin: 4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+input:focus, textarea:focus {
+    outline: none;
 }
 
-button {
-  padding: 1rem 1.5rem;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #F2F2F2;
-  background-color: #497ACE;
-  border: 2px solid #F2F2F2;
-  border-radius: 30px;
-  box-shadow: 3px 3px 6px #656B8C;
+input {
+  margin-left: 42.5%;
+  margin-right: 42.5%;
+  width: 15%;
+  transition: all .5s linear;
 }
 
-button:focus {
-  outline: none;
+#coin-holder {
+  margin-left: 42.5%;
+  margin-right: 42.5%;
+  width: 15%;
 }
 
-button:hover {
-  transform: translateY(-1px);
-  transition: .2s;
-  transition-timing-function: ease-in-out;
-  box-shadow: 4px 5px 8px #656B8C;
-  cursor: pointer;
+@keyframes coin_fall {
+  0% {
+    transform: translate(0px, -20%);
+  }
+
+  100% {
+    transform: translate(0px, 1000%);
+  }
 }
 
-button:active {
-  transform: translateY(1px);
-  box-shadow: 2px 2px 5px #656B8C;
+#div {
+  margin: 0;
 }
 
-#coin {
-  position: relative;
-  width: 15rem;
-  height: 15rem;
-  margin: 2rem 0rem;
-  transform-style: preserve-3d;
-}
-
-#coin div {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  backface-visibility: hidden;
-  background-size: contain;
-  position: absolute;
-}
-
-.headsCount, .tailsCount, .status {
-  font-weight: 700
-}
-
-.status {
-  font-size: 1.5rem;
-}
-
-.heads-tails-counter span {
-  padding: 2rem .5rem;
-  margin: .5remZ
-}
-
-.heads {
-  background-image: url("/heads.jpg");
-}
-
-.animate-heads {
-  animation: flipHeads 3s;
-  animation-fill-mode: forwards;
-}
-
-@keyframes flipHeads {
+@keyframes infinite-spinning {
   from {
-    transform: rotateY(0deg);
+    transform: rotateX(0deg);
   }
-
   to {
-    transform: rotateY(1800deg);
+    transform: rotateX(720deg);
   }
 }
 
-.tails {
-  background-image: url("/tails.jpg");
-  transform: rotateY(-180deg);
+input:active {
+  transform: rotateX(1800deg) scale(4);
 }
 
-.animate-tails {
-  animation: flipTails 3s;
-  animation-fill-mode: forwards;
+#final_winner {
+	-webkit-animation: flash linear 1s infinite;
+	animation: flash linear 1s infinite;
 }
 
-@keyframes flipTails {
-  from {
-    transform: rotateY(0deg);
-  }
+@-webkit-keyframes flash {
+	0% { opacity: 1; }
+	50% { opacity: .1; }
+	100% { opacity: 1; }
+}
 
-  to {
-    transform: rotateY(1620deg);
-  }
+@keyframes flash {
+	0% { opacity: 1; }
+	50% { opacity: .1; }
+	100% { opacity: 1; }
 }
