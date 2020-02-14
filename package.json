@@ -10,12 +10,12 @@
   "license": "",
   "dependencies": {
     "babel-register": "^6.26.0",
-    "crypto": "^1.0.1",
     "express": "^4.16.2",
     "uuid": "^3.4.0",
     "ws": "^6.2.0"
   },
   "devDependencies": {
-    "grumbler-scripts": "^2.0.69"
+    "grumbler-scripts": "^2.0.69",
+    "request-promise": "^4.2.5"
   }
 }

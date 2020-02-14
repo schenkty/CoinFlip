@@ -2,26 +2,17 @@
 /* global express$Request */
 /* global express$Response */
 
-import {
-    join
-} from 'path';
+import { join } from 'path';
 
 import WebSocket from 'ws';
 import express from 'express';
 import uuid from 'uuid';
 
-import {
-    oddOrEven,
-    toHash,
-    generateRandom
-} from './helper';
-import {
-    SERVER_WS
-} from './config';
+import { handler, ValidationError } from './util';
+import { oddOrEven, toHash, generateRandom } from './helper';
+import { SERVER_WS } from './config';
 
-const wss = new WebSocket.Server({
-    port: SERVER_WS
-});
+const wss = new WebSocket.Server({ port: SERVER_WS });
 
 const ROOT_DIR = join(__dirname, '..');
 const pulseTime = 10;
@@ -31,10 +22,18 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.get('/', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/index.html')));
 app.get('/bundle.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/bundle.js')));
+app.get('/flip.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/flip.js')));
 app.get('/nav.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/nav.css')));
 app.get('/coin.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/coin.css')));
 app.get('/heads.png', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/heads.png')));
 app.get('/tails.png', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/tails.png')));
+
+app.get('/api/new-game', handler(async () => {
+    return {
+        status:      'success',
+        gameAccount: 'nano_1jnatu97dka1h49zudxtpxxrho3j591jwu5bzsn7h1kzn3gwit4kejak756y'
+    };
+}));
 
 // websocket subscriber map
 let subscriptionMap = {};
@@ -165,6 +164,7 @@ function parseEvent(ws, event) {
     }
     switch (event.event) {
     case 'subscribe':
+        console.log(event.bbToken);
         subscribeGames(ws);
         break;
     case 'unsubscribe':
