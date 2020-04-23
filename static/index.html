@@ -4,85 +4,32 @@
   <title>CoinToss</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/nav.css" type="text/css">
-  <link rel="stylesheet" href="/coin.css" type="text/css">
+  <link rel="stylesheet" href="/style.css" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Cinzel:400,700&display=swap" rel="stylesheet">
-  <script src="https://brainblocks.io/brainblocks.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript" src="/bundle.js"></script>
   <script type="text/javascript" src="/flip.js"></script>
   <script type="text/javascript">
     const SOCKET = 3080;
 
-    function play(newGame = true) {
-      if (newGame === false) {
-          // show modal
-          document.querySelector('.modal').style.display = 'block';
-      }
-
+    function play() {
       $.get(`http://127.0.0.1/api/new-game`, function(data) {
           currentGame.gameAccount = data.gameAccount;
-          showBB();
+          flip();
       });
     }
-
-    function showBB() {
-      // Remove old button
-      document.querySelector('#nano-button').innerHTML = '';
-
-      // Pull Selected Value
-      var gameValue = document.getElementById("game-amount").value;
-
-      // Convert NANO to nano/rai
-      gameValue = gameValue * 1000000;
-
-      // Render the Nano button
-      brainblocks.Button.render({
-        // Pass in payment options
-        style: {
-            expanded: true
-        },
-
-        // Pass in payment options
-        payment: {
-          currency: 'rai',
-          amount: gameValue,
-          destination: currentGame.gameAccount
-        },
-
-        // Handle successful payments
-        onPayment: function(data) {
-          document.querySelector('.modal').style.display = 'none';
-          setTimeout(flip(data.token), 500);
-        }
-      }, '#nano-button');
-    }
-
     // start new game on page load
     play();
   </script>
 </head>
 
 <body>
-  <div class="modal">
-    <div class="modal-content">
-      <center>
-        <h1 style="color: red;">TEST</h1>
-        <p style="color: red;">Don't send funds unless you know what you are doing.</p>
-        <h1>Deposit to Play</h1>
-        <p>Enter Flip Amount Below:</p>
-        <input type="number" id="game-amount" min="1" max="50" onchange="showBB()" value="5" style="width: 200px; height: 20px; margin-bottom: 50px;">
-        <div id="nano-button"></div>
-      </center>
-    </div>
-  </div>
   <div class="topnav">
     <a class="active" href="">CoinToss</a>
   </div>
   <center>
-    <img id="coin-holder" src="">
-    <img src="/heads.png" id="coin">
     <h1 id="final_winner"></h1>
-    <button class='btn' onclick="play(false)">Play Again</button>
+    <button class='btn' onclick="play()">Play Again</button>
     <p class="heads-tails-counter">Heads:<span class="headsCount">0</span> Tails:<span Class="tailsCount">0</span></p>
   </center>
 </body>

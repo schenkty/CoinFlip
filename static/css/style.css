@@ -52,56 +52,11 @@ input:focus, textarea:focus {
     outline: none;
 }
 
-#coin {
-  margin-left: 42.5%;
-  margin-right: 42.5%;
-  width: 15%;
-  transition: all .5s linear;
-}
-
-/* input {
-  margin-left: 42.5%;
-  margin-right: 42.5%;
-  width: 15%;
-  transition: all .5s linear;
-} */
-
-#coin-holder {
-  margin-left: 42.5%;
-  margin-right: 42.5%;
-  width: 15%;
-}
-
 #div {
   margin: 0;
 }
 
-@keyframes infinite-spinning {
-  from {
-    transform: rotateX(0deg);
-  }
-  to {
-    transform: rotateX(720deg);
-  }
-}
-
-/* input:active {
-  transform: rotateX(1800deg) scale(4);
-} */
-
 #final_winner {
 	-webkit-animation: flash linear 1s infinite;
 	animation: flash linear 1s infinite;
-}
-
-@-webkit-keyframes flash {
-	0% { opacity: 1; }
-	50% { opacity: .1; }
-	100% { opacity: 1; }
-}
-
-@keyframes flash {
-	0% { opacity: 1; }
-	50% { opacity: .1; }
-	100% { opacity: 1; }
 }

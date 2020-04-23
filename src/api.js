@@ -24,9 +24,7 @@ app.get('/', (req : express$Request, res : express$Response) => res.sendFile(joi
 app.get('/bundle.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/bundle.js')));
 app.get('/flip.js', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/js/flip.js')));
 app.get('/nav.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/nav.css')));
-app.get('/coin.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/coin.css')));
-app.get('/heads.png', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/heads.png')));
-app.get('/tails.png', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/img/tails.png')));
+app.get('/style.css', (req : express$Request, res : express$Response) => res.sendFile(join(ROOT_DIR, 'static/css/style.css')));
 
 app.get('/api/new-game', handler(async () => {
     return {
@@ -164,7 +162,6 @@ function parseEvent(ws, event) {
     }
     switch (event.event) {
     case 'subscribe':
-        console.log(event.bbToken);
         subscribeGames(ws);
         break;
     case 'unsubscribe':

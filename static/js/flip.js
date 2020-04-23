@@ -5,21 +5,12 @@ let currentGame = {};
 let headsCount = 0;
 let tailsCount = 0;
 
-function setHolder(result) {
-    // set holder to winner
-    let holder = document.getElementById('coin-holder');
-    let coin = document.getElementById('coin');
-    holder.src = `/${ result }.png`;
-    holder.style.display = 'block';
-    coin.style.display = 'none';
-}
-
 function processResult(result) {
     let status = document.getElementById('final_winner');
     let heads = document.querySelector('.headsCount');
     let tails = document.querySelector('.tailsCount');
 
-    if (result === 'heads') {
+    if (result === 'won') {
         headsCount += 1;
         heads.innerText = headsCount;
         status.innerHTML = `You Won!`;
@@ -28,26 +19,15 @@ function processResult(result) {
         tails.innerText = tailsCount;
         status.innerHTML = `You Lost!`;
     }
-
-    setTimeout(() => {
-        setHolder(result);
-    }, 500);
 }
 
-function flip(token) {
-    let coin = document.getElementById('coin');
-
-    coin.style.transform = 'rotateX(1800deg) scale(2)';
-
+function flip() {
     ws = new WebSocket(`ws://127.0.0.1:${ SOCKET }`);
-
-    currentGame.bbToken = token;
 
     ws.onopen = function() {
         // Web Socket is connected, send data using send()
         ws.send(JSON.stringify({
-            'event':   'subscribe',
-            'bbToken': token
+            'event':   'subscribe'
         }));
     };
 
@@ -55,7 +35,7 @@ function flip(token) {
         const data = JSON.parse(message.data);
         switch (data.event) {
         case 'subscribed':
-        // reset local game object
+            // reset local game object
             currentGame = {};
             currentGameID = data.game;
 
@@ -84,7 +64,7 @@ function flip(token) {
             }
             break;
         case 'houseRandom':
-        // verify that the house random is the same as the house hash
+            // verify that the house random is the same as the house hash
             if (currentGame.houseHash === toHash(data.houseRandom)) {
                 console.log('House is Verified!');
                 let final = `final${  data.houseRandom  }${ currentGame.playerRandom }`;
@@ -102,17 +82,15 @@ function flip(token) {
                 alert('House is flawed!');
             }
         case 'gameUpdate':
-        // notify player if we won or lost.
+            // notify player if we won or lost.
             if (data.won === true && currentGame.won === true) {
                 // player won
                 console.log('You Won!!');
-                coin.src = '/heads.png';
-                processResult('heads');
+                processResult('won');
             } else if (data.won === false && currentGame.won == false) {
                 // player lost
                 console.log('You Lost!');
-                coin.src = '/tails.png';
-                processResult('tails');
+                processResult('lost');
             }
         case 'ping':
             break;
