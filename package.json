@@ -12,7 +12,7 @@
     "babel-register": "^6.26.0",
     "express": "^4.16.2",
     "uuid": "^3.4.0",
-    "ws": "^6.2.0"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "grumbler-scripts": "^2.0.69",
