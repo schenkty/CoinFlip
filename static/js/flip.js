@@ -4,6 +4,7 @@ let ws;
 let currentGame = {};
 let headsCount = 0;
 let tailsCount = 0;
+let SOCKET = 3001;
 
 function processResult(result) {
     let status = document.getElementById('final_winner');

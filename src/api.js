@@ -38,8 +38,7 @@ let subscriptionMap = {};
 let gameMap = {};
 
 function subscribeGames(ws) {
-
-    let gameID = uuid.v4();
+    const gameID = uuid.v4();
     let loop = true;
 
     while (loop) {
